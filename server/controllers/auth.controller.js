@@ -41,14 +41,14 @@ if (!isValid) {
 if (!data.isActive) {
     return res.status(401).json({message:"account blocked by admin",success:flase})
 }
- res.status(200).json({message:"user login success",data})
- const token = jwt.sing({_id:data._id,name:data.name},process.env.JWT_KEY,{expaire:"1d"})
+const token = jwt.sing({_id:data._id,name:data.name},process.env.JWT_KEY,{expaire:"1d"})
 
- res.cookie("ADMIN",token,{
+res.cookie("ADMIN",token,{
     maxAge : 1000 * 60,
     httpOnly:true,
     secure:process.env.NODE_ENV === "production" })
-
+    
+    res.status(200).json({message:"user login success",data})
 
 } catch (error) {
     console.log(error);
