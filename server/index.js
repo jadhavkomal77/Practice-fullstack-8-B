@@ -16,7 +16,9 @@ const app = express()
 // app.use(limiter)
 
 app.use(cors({
-    origin:"http://localhost:3000", 
+    origin: process.env.NODE_ENV === "production"
+    ? "http://localhost:3000"
+    :"http://localhost:3000", 
     credentials:true
 })) // middalware   
 

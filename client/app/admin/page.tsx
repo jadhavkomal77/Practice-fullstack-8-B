@@ -70,7 +70,7 @@ const Dashboard = () => {
   if (isError) return <p>Something went wrong...</p>;
 
   // Support both: direct array OR { todos: [] }
-  const todos = Array.isArray(data) ? data : data?.result || [];
+  // const todos = Array.isArray(data) ? data : data?.result || [];
 
   return (
     <>
@@ -108,7 +108,7 @@ const Dashboard = () => {
         </thead>
 
         <tbody>
-          {todos.map((item: any) => (
+          {data && data.map((item: any) => (
             <tr
               key={item._id}
               className={item.complete ? "bg-green-300" : "bg-red-300"}

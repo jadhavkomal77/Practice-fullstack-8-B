@@ -13,7 +13,7 @@ exports.createTodo = async (req,res) => {
 exports.readTodo = async (req,res) => {
     try {
     const result = await Todo.find()
-        res.status(200).json({message:" todo read success",success:true,result })
+        res.status(200).json(result)
     } catch (error) {
         console.log(error)
         res.status(500).json({message:error.message,success:false})
