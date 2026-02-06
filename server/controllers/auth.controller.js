@@ -23,39 +23,64 @@ try {
 }
 
 
-exports.login = async (req, res) =>{
-try {
-    // 1 check if email exitst in our database
-   const {email,password} = req.body
-   const data = await User.findOne({email})
-//  2  if not parsent send error
-   if (!data) {
-    return res.status(401).json({message:"email not found", success:false})
-   }
-//  3  compare password
-const isValid = await bcrypt.compare(password,data.password)
-// 4 if password do nt match send error
-if (!isValid) {
-    return res.status(401).json({message:"invalid password",success:false})
-}
-//  5 if isActive false send error
-if (!data.isActive) {
-    return res.status(401).json({message:"account blocked by admin",success:flase})
-}
-const token = jwt.sing({_id:data._id,name:data.name},process.env.JWT_KEY,{expaire:"1d"})
+exports.login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
-res.cookie("ADMIN",token,{
-    maxAge : 1000 * 60,
-    httpOnly:true,
-    secure:process.env.NODE_ENV === "production" })
-    
-    res.status(200).json({message:"user login success",data})
+    // 1. Check email
+    const data = await User.findOne({ email });
+    if (!data) {
+      return res.status(401).json({
+        message: "email not found",
+        success: false,
+      });
+    }
 
-} catch (error) {
+    // 2. Compare password
+    const isValid = await bcrypt.compare(password, data.password);
+    if (!isValid) {
+      return res.status(401).json({
+        message: "invalid password",
+        success: false,
+      });
+    }
+
+    // 3. Check active status
+    if (!data.isActive) {
+      return res.status(401).json({
+        message: "account blocked by admin",
+        success: false,
+      });
+    }
+
+    // 4. Create token ✅
+    const token = jwt.sign(
+      { _id: data._id, name: data.name },
+      process.env.JWT_KEY,
+      { expiresIn: "1d" }
+    );
+
+    // 5. Set cookie
+    res.cookie("ADMIN", token, {
+      maxAge: 1000 * 60 * 60 * 24, // 1 day
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+    });
+
+    res.status(200).json({
+      message: "user login success",
+      success: true,
+      data,
+    });
+  } catch (error) {
     console.log(error);
-    res.status(500).json({  message:error.message,success:false })
-}
-}
+    res.status(500).json({
+      message: error.message,
+      success: false,
+    });
+  }
+};
+
 
 
 exports.logout = async (req, res) =>{
