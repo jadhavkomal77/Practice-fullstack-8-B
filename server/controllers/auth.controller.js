@@ -34,7 +34,7 @@ try {
 //  3  compare password
 const isValid = await bcrypt.compare(password,data.password)
 // 4 if password do nt match send error
-if (isValid) {
+if (!isValid) {
     return res.status(401).json({message:"invalid password",success:false})
 }
 //  5 if isActive false send error
